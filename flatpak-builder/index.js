@@ -30,6 +30,9 @@ class Configuration {
     this.branch = core.getInput('branch') || 'master'
     // Whether to build a bundle or not
     this.buildBundle = core.getBooleanInput('build-bundle')
+    // Whether to build a debug bundle or not
+    this.buildDebugBundle = core.getBooleanInput('build-debug-bundle')
+    this.debugBundle = this.bundle.replace('.flatpak', '') + '-debug.flatpak'
     // Whether to restore the cache or not
     this.restoreCache = core.getBooleanInput('restore-cache')
     // Whether to enable caching the build directory
@@ -284,6 +287,27 @@ const build = async (manifest, manifestPath, cacheHitKey, config) => {
     await exec.exec('flatpak', args)
   }
 
+  if (config.buildDebugBundle && !config.stopAtModule) {
+    core.info('Creating a debug bundle...')
+    const parts = appId.split('.')
+    parts[parts.length - 1] = parts.at(-1).replace(/-/g, '_')
+    const debugId = `${parts.join('.')}.Debug`
+    const args = [
+      'build-bundle',
+      config.localRepoDir,
+      config.debugBundle,
+      `--runtime-repo=${config.repositoryUrl}`,
+      `--arch=${config.arch}`,
+      '--runtime',
+      debugId,
+      branch
+    ]
+    if (config.verbose) {
+      args.push('-vv', '--ostree-verbose')
+    }
+    await exec.exec('flatpak', args)
+  }
+
   if (config.mirrorScreenshotsUrl) {
     core.info('Committing screenshots...')
 
@@ -404,7 +428,8 @@ const run = async (config) => {
       core.info('Uploading artifact...')
       // Append the arch to the bundle name to prevent conflicts in multi-arch jobs
       const bundleName = config.bundle.replace('.flatpak', '') + `-${config.arch}.flatpak`
-      return artifactClient.uploadArtifact(bundleName, [config.bundle], '.', {
+      const artifactFiles = config.buildDebugBundle ? [config.bundle, config.debugBundle] : [config.bundle]
+      return artifactClient.uploadArtifact(bundleName, artifactFiles, '.', {
         continueOnError: false
       })
     })

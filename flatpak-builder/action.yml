@@ -21,6 +21,10 @@ inputs:
     description: "Whether to build a bundle or not."
     default: "true"
     required: false
+  build-debug-bundle:
+    description: "Whether to build a debug bundle or not."
+    default: "false"
+    required: false
   repository-url:
     description: >
       The repository used to fetch the runtime when the user downloads the

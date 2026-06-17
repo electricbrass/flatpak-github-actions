@@ -46,6 +46,7 @@ jobs:
 | `stop-at-module` | Stop at the specified module, ignoring it and all the following ones. Using this option disables generating bundles. | Optional | Build all modules from the manifest file |
 | `bundle` | The bundle name  | Optional | `app.flatpak` |
 | `build-bundle` | Whether to build a bundle or not | Optional | `true` |
+| `build-debug-bundle` | Whether to build a debug bundle or not | Optional | `false` |
 | `repository-name` | The repository name, used to fetch the runtime when the user download the Flatpak bundle or when building the application  | Optional | `flathub` |
 | `repository-url` | The repository url, used to fetch the runtime when the user download the Flatpak bundle or when building the application  | Optional | `https://flathub.org/repo/flathub.flatpakrepo` |
 | `run-tests` | Enable/Disable running tests. This overrides the `flatpak-builder` option of the same name, which invokes `make check` or `ninja test`. Network and X11 access is enabled, with a display server provided by `xvfb-run`.  | Optional | `false` |
@@ -96,7 +97,7 @@ jobs:
     - name: Install deps
       if: ${{ matrix.arch != 'x86_64' }}
       run: |
-        # Use the static binaries because it's unable to use a package manager 
+        # Use the static binaries because it's unable to use a package manager
         curl https://download.docker.com/linux/static/stable/x86_64/docker-26.0.0.tgz --output ./docker.tgz
         tar xzvf docker.tgz
         mv docker/* /usr/bin

@@ -311,7 +311,7 @@ const build = async (manifest, manifestPath, cacheHitKey, config) => {
     if (config.verbose) {
       args.push('-vv', '--ostree-verbose')
     }
-    await exec.exec('flatpak', args)
+    // await exec.exec('flatpak', args)
   }
 
   if (config.mirrorScreenshotsUrl) {

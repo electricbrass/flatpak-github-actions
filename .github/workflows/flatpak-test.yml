@@ -48,6 +48,7 @@ jobs:
           cache-key: flatpak-builder-${{ github.sha }}-${{ matrix.restore }}
           arch: ${{ matrix.arch }}
           verbose: true
+          build-debug-bundle: true
       # TODO: setup a flat-manager before and use it later here
       #- uses: ./flat-manager
       #  with:

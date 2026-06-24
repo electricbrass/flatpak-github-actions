@@ -131,6 +131,48 @@ jobs:
           cache-key: flatpak-builder-${{ github.sha }}-debug-bundle
           verbose: true
 
+  flatpak-builder-artifact-name:
+    name: Flatpak Builder Artifact Name
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
+      options: --privileged
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - bundle:
+          artifact-name:
+          expected-artifact: app-x86_64.flatpak
+
+        - bundle: org.example.MyApp.Devel-artifact-name.flatpak
+          artifact-name:
+          expected-artifact: org.example.MyApp.Devel-artifact-name-x86_64.flatpak
+
+        - bundle: org.example.MyApp.Devel-artifact-empty-name.flatpak
+          artifact-name: ""
+          expected-artifact: org.example.MyApp.Devel-artifact-empty-name-x86_64.flatpak
+
+        - bundle: org.example.MyApp.Devel-artifact-name.flatpak
+          artifact-name: org.example.MyApp.Devel-artifact-name.flatpak
+          expected-artifact: org.example.MyApp.Devel-artifact-name.flatpak
+
+        - bundle:
+          artifact-name: artifact-name-test
+          expected-artifact: artifact-name-test
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./flatpak-builder
+        with:
+          bundle: ${{ matrix.bundle }}
+          artifact-name: ${{ matrix.artifact-name }}
+          manifest-path: ./flatpak-builder/tests/test-project/org.example.MyApp.yaml
+          verbose: true
+          arch: x86_64
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ matrix.expected-artifact }}
+
   tests:
     name: Tests
     runs-on: ubuntu-latest

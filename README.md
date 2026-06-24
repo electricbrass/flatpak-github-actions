@@ -63,6 +63,7 @@ jobs:
 | `keep-build-dirs` | Keep build directories after the build finishes (passes `--keep-build-dirs` to flatpak-builder). Useful for debugging intermediate files. | Optional | `false` |
 | `verbose` | Enable verbosity | Optional | `false` |
 | `upload-artifact` | Whether to upload the resulting bundle or not as an artifact | Optional | `true` |
+| `artifact-name` | Name of the uploaded artifact | Optional | `app-${arch}.flatpak` |
 
 **Note**: `repo-dir` and `state-dir` must be under the same partition.
 

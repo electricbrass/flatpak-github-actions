@@ -66,6 +66,11 @@ class Configuration {
     this.verbose = core.getBooleanInput('verbose')
     // Upload the artifact
     this.uploadArtifact = core.getBooleanInput('upload-artifact')
+    // Artifact name
+    this.artifactName = core.getInput('artifact-name') ||
+      // Append the arch to the bundle name to prevent conflicts in multi-arch jobs
+      // If a name is provided, it's on the user to prevent this
+      this.bundle.replace('.flatpak', '') + `-${this.arch}.flatpak`
   }
 
   async cacheKey () {
@@ -426,10 +431,8 @@ const run = async (config) => {
 
       const artifactClient = new DefaultArtifactClient()
       core.info('Uploading artifact...')
-      // Append the arch to the bundle name to prevent conflicts in multi-arch jobs
-      const bundleName = config.bundle.replace('.flatpak', '') + `-${config.arch}.flatpak`
       const artifactFiles = config.buildDebugBundle ? [config.bundle, config.debugBundle] : [config.bundle]
-      return artifactClient.uploadArtifact(bundleName, artifactFiles, '.', {
+      return artifactClient.uploadArtifact(config.artifactName, artifactFiles, '.', {
         continueOnError: false
       })
     })

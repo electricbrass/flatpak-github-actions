@@ -106,6 +106,10 @@ inputs:
       "Whether to upload the resulting bundle or not as an artifact"
     required: false
     default: "true"
+  artifact-name:
+    description: >
+      "Name of the uploaded artifact. Defaults to the bundle name tagged with the architecture"
+    required: false
 runs:
   using: "node24"
   main: "dist/index.js"

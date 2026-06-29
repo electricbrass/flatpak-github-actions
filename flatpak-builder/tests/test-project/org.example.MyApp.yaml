@@ -10,6 +10,7 @@ finish-args:
   - --device=dri
   - --socket=fallback-x11
   - --socket=wayland
+  - --filesysem=xdg-projects
 modules:
   - name: testproject
     buildsystem: meson
